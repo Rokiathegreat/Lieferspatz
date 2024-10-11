@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<script>
+    // Define the cart object, import g, cart is a json object
+    let cart = {};
+
+    function adjustItemQuantity(itemName, change, itemPrice) {
+        //let quantity = cart[itemName] ? cart[itemName].quantity : 0;
+        
+            // Initialize the quantity of the item
+        let quantity = 0;
+
+        // Check if the item already exists in the cart
+        if (cart[itemName]) {
+            quantity = cart[itemName].quantity;
+        }
+
+        quantity += change;
+        if (quantity < 0) quantity = 0;
+
+        cart[itemName] = { quantity: quantity, price: parseFloat(itemPrice) };
+        document.getElementById(`quantity-${itemName}`).innerText = quantity;
+
+        updateCartTotal();
+        //console.log(cart);
+    }
+
+
+    function updateCartTotal() {
+        let total = 0;
+        document.getElementById('cart-items').innerHTML = '';
+        Object.keys(cart).forEach((itemName) => {
+            let item = cart[itemName];
+            let itemTotal = item.quantity * item.price;
+            if (item.quantity > 0) {
+                document.getElementById('cart-items').innerHTML += `<p>${itemName}: ${item.quantity} x $${item.price.toFixed(2)} = $${itemTotal.toFixed(2)}</p>`;
+                total += itemTotal;
+            }
+        });
+        document.getElementById('total-price').innerText = total.toFixed(2);
+        document.getElementById('total_price_input').value = total.toFixed(2); // Update the value of the hidden input field
+    }
+
+    // Function to submit the cart
+    function submitCart() {
+        const cartData = JSON.stringify(Object.keys(cart).reduce((acc, itemName) => {
+            if (cart[itemName].quantity > 0) {
+                acc.push({
+                    item_name: itemName,
+                    quantity: cart[itemName].quantity,
+                    total_price: (cart[itemName].quantity * cart[itemName].price).toFixed(2)
+                });
+            }
+            return acc;
+        }, []));
+        const restaurantName = "{{ restaurant.name }}";
+        const customerEmail = "{{ session['customer_email'] }}";
+        const customerNotes = document.getElementById('customer_notes').value;
+
+        let formData = new FormData();
+        formData.append('cart_data', cartData);
+        formData.append('restaurant_name', restaurantName);
+        formData.append('customer_email', customerEmail);
+        formData.append('customer_notes', customerNotes);
+
+        // The total price field is now calculated server-side from the cart items.
+        // No need to append 'total_price' here, as it's calculated in the Python code.
+
+        fetch('/process_cart', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+               // alert('Order submitted successfully! Order Number: ' + data.order_nr);
+            // Redirect to order confirmation page with the order number
+				window.location.href = `/order_confirmation/${data.order_nr}`;
+			} else {
+				alert('Error submitting order: ' + data.error_message);
+				}
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while submitting the order. Please try again later.');
+        });
+    }
+
+
+    
+</script>
+
+<style>
+
+    .item-price {
+        color: red;
+        font-weight: bolder;
+    }
+</style>
+
+<a href="{{ url_for('show_restaurants') }}" class="btn btn-primary">Back to Restaurants</a>
+
+
+
+
+<div style="display: flex;">
+  <div id="menu" style="flex: 3; padding: 20px;">
+    <h2>Menu for <span class="restaurant_name">{{ restaurant.name }}</span></h2>
+<br>
+    <ul class="nav nav-tabs">
+   {% for category in categories %}
+        <li class="nav-item">
+          <a class="nav-link {% if loop.first %}active{% endif %}" data-bs-toggle="tab" href="#{{ category.replace(' ', '') }}">{{ category }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+      {% for category in categories %}
+        <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="{{ category.replace(' ', '')  }}">
+          <h4>{{ category }}</h4>
+          <hr>
+          {% for item in menu_items if item.category == category %}
+            <div class="menu-item" style="border: 1px solid #ccc; padding: 20px; margin: 20px; display: flex; align-items: center;">
+              <img src="{{ url_for('static', filename='images/' + item[5]) }}" alt="Item Photo" style="width: 150px; height: 150px; margin-right: 20px;">
+              <div>
+                <h3>{{ item[0] }}</h3>
+                <p>{{ item[3] }}</p>
+                <p>Price: $<span class="item-price">{{ item[2] }}</span></p>
+                <button onclick="adjustItemQuantity('{{ item[0] }}', 1, '{{ item[2] }}')">+</button>
+                <span id="quantity-{{ item[0] }}">0</span>
+                <button onclick="adjustItemQuantity('{{ item[0] }}', -1, '{{ item[2] }}')">-</button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+
+  <div id="cart" style="flex: 1; padding: 20px; border-left: 1px solid #ccc;">
+    <h3>
+	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+  <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313 7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2m7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/>
+</svg>	
+	Cart</h3>
+    <div id="cart-items" class="menuItme"></div>
+    <p class="menuItme" style="color:red;">Total Price: $<span id="total-price">0.00</span></p>
+<div>
+    <form id="cart_form" action="{{ url_for('process_cart') }}" method="post">
+      <input type="hidden" name="cart_data" id="cart_data">
+      <input type="hidden" name="restaurant_name" value="{{ restaurant.name }}">
+      <input type="hidden" name="customer_email" value="{{ session['customer_email'] }}">
+      <input type="hidden" name="total_price" id="total_price_input" value="">
+      <textarea name="customer_notes" id="customer_notes" placeholder="Any notes for the restaurant?"></textarea><br>
+      <button type="button" class="btn btn-primary" onclick="submitCart()">Submit Order</button>
+    </form>
+</div>	
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Restaurant Login</h2>
+    <form action="{{ url_for('restaurant_login') }}" method="post">
+        <div class="form-frame" style="border: 1px solid #ccc; padding: 20px; margin-left: 70px; margin-right: 70px;">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <br> <!-- Add a line break to move the input to the next line -->
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <br> <!-- Add a line break to move the input to the next line -->
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button  class="btn btn-primary" type="submit">Login</button>
+        </div>
+    </form>
+    <a href="{{ url_for('restaurant_register') }}">Don't have an account? Register here</a>
+</div>
+{% endblock %}

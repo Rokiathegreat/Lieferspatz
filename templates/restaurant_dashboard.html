@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Welcome to the Restaurant Dashboard</h2>
+
+    <div class="form-frame" style="border: 1px solid #ccc; padding: 20px; margin-left: 70px; margin-right: 70px;">
+        <div class="form-group">
+
+    <!-- Display Restaurant Name, Description, and Photo -->
+    <div class="restaurant-info">
+        <h3>Restaurant Name: {{ restaurant_name }}</h3>
+        <p>Description: {{ restaurant_description }}</p>
+        <img src="{{ url_for('static', filename='images/' + restaurant_photo) }}" alt="Restaurant Photo">
+    </div>
+
+    <br>
+    <!-- Add buttons for managing menu items and orders -->
+    <div class="dashboard-buttons">
+		<a href="{{ url_for('manage_menu_items') }}" class="btn btn-primary">Manage Menu Items</a>
+        <a href="{{ url_for('manage_orders') }}" class="btn btn-primary">Manage Orders</a>
+    </div>
+        </div>
+    </div>
+
+{% endblock %}

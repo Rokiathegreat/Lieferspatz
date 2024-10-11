@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="form-frame" style="border: 1px solid #ccc; padding: 20px; margin-left: 70px; margin-right: 70px;">
+
+<div class="order-confirmation" class="form-group">
+    <h2>Order Confirmation</h2>
+    <p>Order Number: {{ order.Order_Nr }}</p>
+    <p>Status: {{ order.STATUS }}</p>
+    <p>Total Price: ${{ order.TOTAL_PRICE }}</p>
+    <p>Customer Notes: {{ order.Customer_Notes }}</p>
+    <hr>
+
+    <h3>Order Items</h3>
+    <ul>
+        {% for item in items %}
+        <li>{{ item.item_name }}: {{ item.quantity }} x ${{ item.total_price }}</li>
+        {% endfor %}
+    </ul>
+    <hr>
+
+    <button type="button" id="confirmOrderButton" class="btn btn-primary">Confirm Order</button>
+</div>
+</div>
+
+<script>
+document.getElementById('confirmOrderButton').addEventListener('click', function() {
+    const orderNr = {{ order.Order_Nr }};
+
+    fetch(`/confirm_order/${orderNr}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // Include CSRF token as needed based on your security setup
+        },
+        body: JSON.stringify({ orderNr: orderNr })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Order confirmed successfully!');
+            // Redirect to a success page or update the UI as needed
+            window.location.href = '/show_restaurants'; // Redirect to the show restaurants page
+        } else {
+            alert('Error confirming order: ' + data.error_message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again later.');
+    });
+});
+</script>
+
+{% endblock %}

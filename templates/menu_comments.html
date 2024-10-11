@@ -1,0 +1,99 @@
+<script>
+    // Initialize an empty object to store cart items where key is item name and value is an object containing quantity and price.
+    let cart = {};
+
+    // Function to adjust the quantity of a specific item in the cart.
+    function adjustItemQuantity(itemName, change, itemPrice) {
+        // Check if the item already exists in the cart and retrieve its current quantity, or default to 0 if not found.
+        let quantity = cart[itemName] ? cart[itemName].quantity : 0;
+
+        // Adjust the item's quantity by the specified change amount. Prevent negative quantities.
+        quantity += change;
+        if (quantity < 0) quantity = 0;
+
+        // Update the cart object with the new item quantity and price, parsing the price to ensure it's a floating-point number.
+        cart[itemName] = { quantity: quantity, price: parseFloat(itemPrice) };
+
+        // Update the displayed quantity for this item on the webpage.
+        document.getElementById(quantity-${itemName}).innerText = quantity;
+
+        // Recalculate and update the cart's total price.
+        updateCartTotal();
+    }
+
+    // Function to recalculate and display the total price of all items in the cart.
+    function updateCartTotal() {
+        let total = 0; // Initialize total price to 0.
+        document.getElementById('cart-items').innerHTML = ''; // Clear the current cart items display.
+
+        // Iterate over each item in the cart.
+        Object.keys(cart).forEach((itemName) => {
+            let item = cart[itemName];
+            let itemTotal = item.quantity * item.price; // Calculate total price for this item.
+
+            // If item quantity is more than 0, append item details to the cart display and add its total to the overall cart total.
+            if (item.quantity > 0) {
+                document.getElementById('cart-items').innerHTML += <p>${itemName}: ${item.quantity} x $${item.price.toFixed(2)} = $${itemTotal.toFixed(2)}</p>;
+                total += itemTotal;
+            }
+        });
+
+        // Update the total price display on the webpage.
+        document.getElementById('total-price').innerText = total.toFixed(2);
+        // Also, update the hidden input field with the total price, for form submission.
+        document.getElementById('total_price_input').value = total.toFixed(2);
+    }
+
+    // Function to handle cart submission, sending cart data to the server for processing.
+    function submitCart() {
+        // Serialize the cart object into a JSON string, including only items with quantity greater than 0.
+        const cartData = JSON.stringify(Object.keys(cart).reduce((acc, itemName) => {
+            if (cart[itemName].quantity > 0) {
+                acc.push({
+                    item_name: itemName,
+                    quantity: cart[itemName].quantity,
+                    total_price: (cart[itemName].quantity * cart[itemName].price).toFixed(2)
+                });
+            }
+            return acc;
+        }, []));
+
+        // Placeholder variables for restaurant name and customer email, meant to be replaced with actual data in a live application.
+        const restaurantName = "{{ restaurant.name }}";
+        const customerEmail = "{{ session['customer_email'] }}";
+        const customerNotes = document.getElementById('customer_notes').value; // Retrieve any customer notes from the form input.
+
+        // Create a FormData object to hold the cart data and other information for submission.
+        let formData = new FormData();
+        formData.append('cart_data', cartData);
+        formData.append('restaurant_name', restaurantName);
+        formData.append('customer_email', customerEmail);
+        formData.append('customer_notes', customerNotes);
+
+        // Use the Fetch API to send a POST request to the server endpoint designed to process the cart.
+        fetch('/process_cart', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(Request failed with status ${response.status});
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // If the order was successfully submitted, redirect to the order confirmation page using the provided order number.
+                window.location.href = /order_confirmation/${data.order_nr};
+            } else {
+                // If there was an error processing the order, display an alert message with the error details.
+                alert('Error submitting order: ' + data.error_message);
+            }
+        })
+        .catch(error => {
+            // Log and alert the user of any errors that occurred during the fetch operation.
+            console.error('Error:', error);
+            alert('An error occurred while submitting the order. Please try again later.');
+        });
+    }
+</script>

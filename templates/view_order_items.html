@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Order Items</h2>
+
+  <table class="table table-bordered table-striped" style="margin-left: 20px;">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- List order items for the selected order -->
+      {% for item in order_items %}
+        <tr>
+          <td>{{ item[2] }}</td>
+          <td>{{ item[3] }}</td>
+          <td>${{ item[4] }}</td>
+		  
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('manage_orders') }}" class="btn btn-primary">Back to Orders</a>
+{% endblock %}

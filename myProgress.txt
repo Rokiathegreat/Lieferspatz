@@ -1,0 +1,16 @@
+﻿
+
+7- run the application python app.py
+	http://127.0.0.1:5000
+
+8- restart the application:
+	CTRL+C
+	OrderMgmtVenv\Scripts\activate
+	python app.py
+
+max@gmail.com	x123
+sushi@gmail.com	x123
+
+
+test-route:
+127.0.0.1:5000/order_confirmation/15

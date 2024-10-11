@@ -1,0 +1,12 @@
+-- Save the output to a script file
+sqlite3 C:\softwares\sqlite\Order.db .dump > C:\softwares\sqlite\backup.sql
+--
+--Command to create new database
+C:\softwares\sqlite\sqlite3 C:\softwares\sqlite\DeliverySparrowDataBase.db < C:\softwares\sqlite\backup-DeliverySparrow_final.sql
+--
+
+
+C:\softwares\sqlite\sqlite3 C:\FinalProject\Our_Project_Final\Our_Project_Final\DeliverySparrowDataBase.db < C:\FinalProject\Our_Project_Final\Our_Project_Final\Database\backup-DeliverySparrow_final.sql
+
+
+C:\sqlite\sqlite3 C:\FinalProject\Our_Project_Final\Our_Project_Final\DeliverySparrowDataBase.db   < C:\FinalProject\Our_Project_Final\Our_Project_Final\Database\backup-DeliverySparrow_final.sql

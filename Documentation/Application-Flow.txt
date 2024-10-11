@@ -1,0 +1,62 @@
+Used Routes, Related Database Tables, and HTML Templates
+Home Page (/)
+
+HTML Template: home.html
+No database interaction.
+Customer Login (/customer/login)
+
+Database Table: Customer
+HTML Template: customer_login.html
+Show Restaurants (/show_restaurants)
+
+Database Table: Restaurant
+HTML Template: Not provided in the uploads but expected to be restaurants.html
+Show Menu (/restaurant/menu/<string:restaurant_name>)
+
+Database Tables: Restaurant, Item
+HTML Template: menu.html
+Process Cart (/process_cart, /process_cart1)
+
+Database Tables: OrderC, order_items
+No specific HTML template; redirects or responds with JSON.
+Order Confirmation (/order_confirmation/<int:order_nr>)
+
+Database Tables: OrderC, order_items
+HTML Template: Not provided in the uploads but expected to be order_confirmation.html
+Customer Orders (/customer_orders)
+
+Database Table: OrderC
+HTML Template: customer_orders.html
+Customer Register (/customer/register)
+
+Database Table: Customer
+HTML Template: customer_register.html
+Restaurant Register (/restaurant/register)
+
+Database Table: Restaurant
+HTML Template: restaurant_register.html
+Restaurant Login (/restaurant/login)
+
+Database Table: Restaurant
+HTML Template: restaurant_login.html
+Restaurant Dashboard (/restaurant/dashboard)
+
+Database Table: Restaurant
+HTML Template: restaurant_dashboard.html
+Manage Orders (/restaurant/manage_orders), View Order Items (/restaurant/view_order_items/<int:order_id>), Update Order Status (/restaurant/update_order_status/<int:order_id>)
+
+Database Tables: OrderC, order_items
+HTML Template for Managing Orders: Not provided but expected to be manage_orders.html
+HTML Template for Viewing Order Items: Not provided but expected to be view_order_items.html
+Manage Menu Items, Add Menu Item, Update Menu Item, Delete Menu Item (/restaurant/manage_menu_items, /restaurant/add_menu_item, /restaurant/update_menu_item/<item_name>, /restaurant/delete_menu_item/<item_name>)
+
+Database Table: Item
+HTML Templates: Not provided but expected to be related to menu item management such as manage_menu_items.html, add_menu_item.html, update_menu_item.html, confirm_delete_menu_item.html
+Logout (/logout)
+
+No database interaction directly; clears session.
+Redirects to the home page.
+Unused Routes
+All routes provided in the application seem to serve specific functionalities related to the food delivery application, including authentication, displaying information, managing orders, and updating the menu. Without more context about the full scope of the application or any development plans, it's not possible to definitively label any route as "unused" without risking the removal of potentially important functionality. However, it is worth noting that routes like /update_cart_session, /save_cart_and_view, /view_cart, and /confirm_order/<int:order_nr> do not have corresponding HTML templates provided, but these routes appear to handle background processes or API-like calls rather than directly serving pages.
+
+For a more detailed analysis or to identify truly unused routes, a deeper dive into the application's frontend and how it interacts with these endpoints would be necessary.

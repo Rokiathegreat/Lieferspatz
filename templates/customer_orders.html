@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- Use styling from css stylesheet -->
+<style>
+    #orderStatusFilter {
+        margin-bottom: 20px;
+    }
+
+    .orderItem {
+        border: 1px solid #ddd;
+        margin-bottom: 10px;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .status {
+        display: inline-block;
+        padding: 2px 5px;
+        border-radius: 4px;
+        color: #fff;
+    }
+
+    .status[data-status="In Process"] {
+        background-color: #f0ad4e;
+    }
+
+    .status[data-status="Completed"] {
+        background-color: #5cb85c;
+    }
+
+    .status[data-status="Cancelled"] {
+        background-color: #d9534f;
+    }
+
+    /* Additional status colors as needed */
+    .status[data-status="Other"] {
+        background-color: #5bc0de;
+    }
+</style>
+<h2>My Orders</h2>
+
+
+<!-- Make a table here -->
+<ul id="ordersList">
+    {% for order in orders %}
+        {% if order.status == "In Process" %}
+            <li class="orderItem" data-status="{{ order.status }}">
+                Order Number: {{ order.order_nr }}<br>
+                Time: {{ order.order_time_column }},
+                Restaurant: {{ order.restaurant_name }},
+                Status: {{ order.status }},
+                Total Price: ${{ order.total_price }}
+            </li>
+        {% endif %}
+    {% endfor %}
+    {% for order in orders %}
+        {% if order.status == "in preparation" %}
+            <li class="orderItem" data-status="{{ order.status }}">
+                Order Number: {{ order.order_nr }}<br>
+                Time: {{ order.order_time_column }},
+                Restaurant: {{ order.restaurant_name }},
+                Status: {{ order.status }},
+                Total Price: ${{ order.total_price }}
+            </li>
+        {% endif %}
+    {% endfor %}
+    {% for order in orders %}
+        {% if order.status == "Completed" %}
+            <li class="orderItem" data-status="{{ order.status }}">
+                Order Number: {{ order.order_nr }}<br>
+                Time: {{ order.order_time_column }},
+                Restaurant: {{ order.restaurant_name }},
+                Status: {{ order.status }},
+                Total Price: ${{ order.total_price }}
+            </li>
+        {% endif %}
+    {% endfor %}
+    {% for order in orders %}
+        {% if order.status == "cancelled" %}
+            <li class="orderItem" data-status="{{ order.status }}">
+                Order Number: {{ order.order_nr }}<br>
+                Time: {{ order.order_time_column }},
+                Restaurant: {{ order.restaurant_name }},
+                Status: {{ order.status }},
+                Total Price: ${{ order.total_price }}
+            </li>
+        {% endif %}
+    {% endfor %}
+
+</ul>
+
+
+
+
+{% endblock %}

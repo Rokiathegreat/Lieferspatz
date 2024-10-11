@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>Manage Orders</h2>
+  <!-- Display the restaurant name -->
+  <p>Restaurant Name: {{ restaurant_name }}</p>
+  <table class="table table-bordered table-striped" style="margin-left: 10px;">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Order Time</th>
+        <th>Restaurant Name</th> <!-- th is td but in thead -->
+        <th>Total Price</th>
+        <th>Customer Email</th>
+        <th>Customer Notes</th> <!-- Add this column -->
+        <th>Status</th>
+        <th>Actions</th>
+        <th>View Orders</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- List existing orders -->
+      {% for order in orders %}
+        <tr>
+          <td>{{ order[0] }}</td>
+          <td>{{ order[1] }}</td>
+          <td>{{ order[3] }}</td>
+          <td>${{ order[4] }}</td>
+          <td>{{ order[5] }}</td>
+          <td>{{ order[7] }}</td> <!-- Display Customer Notes here -->
+          <td>{{ order[6] }}</td>
+          <td>
+            <!-- Update Status form -->
+            <form action="{{ url_for('update_order_status', order_nr=order[0]) }}" method="post">
+              <select name="new_status"> <!-- Change name to "new_status" -->
+                <!-- <option value="cart">Cart</option> -->
+                <option value="in process">In Process</option>
+                <option value="in preparation">In Preparation</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+          </td>
+          <td>
+            <form action="{{ url_for('view_order_items', order_nr=order[0]) }}" method="get">
+              <button type="submit" class="btn btn-info">View Order</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

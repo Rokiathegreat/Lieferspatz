@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}List of Restaurants{% endblock %} #??
+
+{% block content %}
+<h2>List of Restaurants</h2>
+
+{% for restaurant in restaurants %}
+    <div class="restaurant-frame" style="display: flex; border: 1px solid #ccc; padding: 20px; margin-bottom: 20px; margin-left: 70px; margin-right: 70px; align-items: center;">
+        <div style="flex: 1; text-align: center;">
+            <img src="{{ url_for('static', filename='images/' + restaurant.photo) }}" alt="Restaurant Photo" style="max-height: 200px; width: auto; margin-right: 20px;">
+        </div>
+        <div style="flex: 2;">
+            <a href="{{ url_for('show_menu', restaurant_name=restaurant.name) }}" style="text-decoration: none; color: black;">
+                <h3 style="margin-top: 0;">{{ restaurant.name }}</h3>
+                <p>Description: {{ restaurant.description }}</p>
+                <p>Opening Time: {{ restaurant.opening_time }}</p>
+                <p>Closing Time: {{ restaurant.closing_time }}</p>
+                <p>Address: {{ restaurant.address }}</p>
+            </a>
+        </div>
+    </div>
+{% endfor %}
+{% endblock %}

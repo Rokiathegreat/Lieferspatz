@@ -1,0 +1,24 @@
+﻿{% extends "base.html" %}
+
+{% block content %}
+<br>
+<div class="form-frame" style=" text-align:center; border: 1px solid #ccc; padding: 20px; margin-left: 70px; margin-right: 70px;">
+
+<div class="order-confirmation" class="form-group">
+ 
+   <h1>Welcome to DeliverySparrow</h1>
+    <div>
+        <h2>Login</h2>
+        <a class="btn btn-primary" href="{{ url_for('customer_login') }}">Customer Login</a> 
+        <a  class="btn btn-primary" href="{{ url_for('restaurant_login') }}">Restaurant Login</a>
+    </div>
+    <div>
+        <h2>Register</h2>
+        <a  class="btn btn-warning" href="{{ url_for('customer_register') }}">Register as Customer</a> 
+        <a  class="btn btn-warning" href="{{ url_for('restaurant_register') }}">Register as Restaurant</a>
+    </div>
+    
+   </div>
+</div>
+
+{% endblock %}
